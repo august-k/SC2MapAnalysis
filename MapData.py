@@ -1,11 +1,13 @@
-import numpy as np
-from scipy.ndimage import binary_fill_holes, generate_binary_structure, label
-import matplotlib.pyplot as plt
+from typing import List
+
 import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import numpy as np
 from sc2.game_info import GameInfo
 from sc2.position import Point2
+from scipy.ndimage import binary_fill_holes, generate_binary_structure, label
+
 from Region import Region
-from typing import List
 
 
 class MapData:

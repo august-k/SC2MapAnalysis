@@ -1,10 +1,12 @@
-import pickle
 import lzma
-from MapData import MapData
+import pickle
+
 from sc2.game_data import GameData
 from sc2.game_info import GameInfo
 from sc2.game_state import GameState
 from sc2.player import BotAI
+
+from MapData import MapData
 
 if __name__ == "__main__":
     with lzma.open("pickle_data/PillarsofGoldLE.xz", "rb") as f:

@@ -1,11 +1,12 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.ndimage import center_of_mass
+from Region import Region
 
 
 class Polygon:
 
-    def __init__(self, region):
+    def __init__(self, region: Region):
         self.region = region
         self.array = region.array
         self.indices = np.where(self.array == 1)
@@ -32,6 +33,10 @@ class Polygon:
 
     @property
     def area(self):
+        """
+        Number of points contained within Polygon.
+        :return:
+        """
         return len(self.indices[0])
 
     @property

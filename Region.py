@@ -1,8 +1,10 @@
-from Polygon import Polygon
+from typing import List
+
 import matplotlib.pyplot as plt
 import numpy as np
 from sc2.position import Point2
-from typing import List
+
+from Polygon import Polygon
 
 
 class Region:
