@@ -10,7 +10,7 @@ from sc2.position import Point2
 from MapAnalyzer.exceptions import OutOfBoundsException, PatherNoPointsException
 from MapAnalyzer.Region import Region
 from MapAnalyzer.utils import change_destructable_status_in_grid
-from .cext import astar_path, astar_path_with_nyduses
+from .cext import astar_path, astar_path_with_nyduses, clockwise_astar_path
 from .destructibles import *
 
 if TYPE_CHECKING:
@@ -378,6 +378,53 @@ class MapAnalyzerPather:
             return skipped_path
         else:
             logger.debug(f"No Path found s{start}, g{goal}")
+            return None
+    
+    def clockwise_pathfind(
+        self,
+        start: Tuple[float, float],
+        goal: Tuple[float, float],
+        origin: Tuple[float, float],
+        grid: Optional[ndarray] = None,
+        large: bool = False,
+        smoothing: bool = False,
+        sensitivity: int = 1,
+    ) -> Optional[List[Point2]]:
+        if grid is None:
+            logger.warning("Using the default pyastar grid as no grid was provided.")
+            grid = self.get_pyastar_grid()
+
+        if start is not None and goal is not None and origin is not None:
+            start = round(start[0]), round(start[1])
+            start = self.find_eligible_point(start, grid, self.terrain_height, 10)
+            goal = round(goal[0]), round(goal[1])
+            goal = self.find_eligible_point(goal, grid, self.terrain_height, 10)
+            origin = round(origin[0]), round(origin[1])
+            origin = self.find_eligible_point(origin, grid, self.terrain_height, 10)
+        else:
+            logger.warning(PatherNoPointsException(start=start, goal=goal))
+            return None
+
+        # find_eligible_point didn't find any pathable nodes nearby
+        if start is None or goal is None or origin is None:
+            return None
+
+        path = clockwise_astar_path(grid, start, goal, origin, large, smoothing)
+
+        if path is not None:
+            # Remove the starting point from the path.
+            # Make sure the goal node is the last node even if we are
+            # skipping points
+            complete_path = list(map(Point2, path))
+            skipped_path = complete_path[0:-1:sensitivity]
+            if skipped_path:
+                skipped_path.pop(0)
+
+            skipped_path.append(complete_path[-1])
+
+            return skipped_path
+        else:
+            logger.debug(f"No Path found s{start}, g{goal}, o{origin}")
             return None
 
     def pathfind_with_nyduses(
