@@ -824,14 +824,14 @@ static int run_clockwise_pathfind(MemoryArena *arena, float *weights, int *paths
         x < i, y > j: up, up_right, right
 
         OR:
-        up_left: (x == i && y < j) || (x < i && y < j) || (x < i && y == j) -> (x <= i && y <= j)
+        up_left: (x == i && y < j) || (x < i && y < j) || (x < i && y == j) -> (x <= i && y >= j)
         up: x < i
-        up_right: (x < i && y == j) || (x < i && y > j) || (x == i && y > j) -> (x <= i && y >= j)
-        left: y < j
-        right: y > j
-        down_left: (x > i && y == j) || (x > i && y < j) || (x == i, y < j) -> (x >= i && y <= j)
+        up_right: (x < i && y == j) || (x < i && y > j) || (x == i && y > j) -> (x <= i && y <= j)
+        left: y > j
+        right: y < j
+        down_left: (x > i && y == j) || (x > i && y < j) || (x == i, y < j) -> (x >= i && y >= j)
         down: x > i
-        down_right: (x == i && y > j) || (x > i && y > j) || (x > i && y == j) -> (x >= i && y >= j)
+        down_right: (x == i && y > j) || (x > i && y > j) || (x > i && y == j) -> (x >= i && y <= j)
         */
 
         nbrs[UP_LEFT] = ((row > 0 && col > 0) && (col <= origin_col && row >= origin_row)) ? cur.idx - w - 1 : -1;
