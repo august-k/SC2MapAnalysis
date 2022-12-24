@@ -2538,6 +2538,7 @@ static PyObject *get_map_data(PyObject *self, PyObject *args)
 static PyMethodDef cext_methods[] = {
     {"astar", (PyCFunction)astar, METH_VARARGS, "astar"},
     {"astar_with_nydus", (PyCFunction)astar_with_nydus, METH_VARARGS, "astar_with_nydus"},
+    {"clockwise_astar", (PyCFunction)clockwise_astar, METH_VARARGS, "clockwise_astar"},
     {"get_map_data", (PyCFunction)get_map_data, METH_VARARGS, "get_map_data"},
     {NULL, NULL, 0, NULL}};
 
