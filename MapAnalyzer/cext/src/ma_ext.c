@@ -834,14 +834,14 @@ static int run_clockwise_pathfind(MemoryArena *arena, float *weights, int *paths
         down_right: (x == i && y > j) || (x > i && y > j) || (x > i && y == j) -> (x >= i && y <= j)
         */
 
-        nbrs[UP_LEFT] = ((row > 0 && col > 0) && (row <= origin_row && col <= origin_col)) ? cur.idx - w - 1 : -1;
-        nbrs[UP] = ((row > 0) && (row < origin_row)) ? cur.idx - w : -1;
-        nbrs[UP_RIGHT] = ((row > 0 && col + 1 < w) && (row <= origin_row && col >= origin_col)) ? cur.idx - w + 1 : -1;
-        nbrs[LEFT] = ((col > 0) && (col < origin_col)) ? cur.idx - 1 : -1;
-        nbrs[RIGHT] = ((col + 1 < w) && (col > origin_col)) ? cur.idx + 1 : -1;
-        nbrs[DOWN_LEFT] = ((row + 1 < h && col > 0) && (row >= origin_row && col <= origin_col)) ? cur.idx + w - 1 : -1;
-        nbrs[DOWN] = ((row + 1 < h) && (row > origin_row)) ? cur.idx + w : -1;
-        nbrs[DOWN_RIGHT] = ((row + 1 < h && col + 1 < w) && (row >= origin_row && col >= origin_col)) ? cur.idx + w + 1 : -1;
+        nbrs[UP_LEFT] = ((row > 0 && col > 0) && (col <= origin_col && row >= origin_row)) ? cur.idx - w - 1 : -1;
+        nbrs[UP] = ((row > 0) && (col < origin_col)) ? cur.idx - w : -1;
+        nbrs[UP_RIGHT] = ((row > 0 && col + 1 < w) && (col <= origin_col && row <= origin_row)) ? cur.idx - w + 1 : -1;
+        nbrs[LEFT] = ((col > 0) && (row > origin_row)) ? cur.idx - 1 : -1;
+        nbrs[RIGHT] = ((col + 1 < w) && (row < origin_row)) ? cur.idx + 1 : -1;
+        nbrs[DOWN_LEFT] = ((row + 1 < h && col > 0) && (col >= origin_col && row >= origin_row)) ? cur.idx + w - 1 : -1;
+        nbrs[DOWN] = ((row + 1 < h) && (col > origin_col)) ? cur.idx + w : -1;
+        nbrs[DOWN_RIGHT] = ((row + 1 < h && col + 1 < w) && (col >= origin_col && row <= origin_row)) ? cur.idx + w + 1 : -1;
 
         for (int i = 0; i < 8; ++i)
         {
