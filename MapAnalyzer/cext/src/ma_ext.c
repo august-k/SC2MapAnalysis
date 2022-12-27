@@ -886,37 +886,37 @@ static int run_clockwise_pathfind(MemoryArena *arena, float *weights, int *paths
             }
         }
 
-        if (nbr_fits[UP_LEFT])
-        {
-            float up_weight = weights[nbrs[UP]];
-            float left_weight = weights[nbrs[LEFT]];
+        // if (nbr_fits[UP_LEFT])
+        // {
+        //     float up_weight = weights[nbrs[UP]];
+        //     float left_weight = weights[nbrs[LEFT]];
 
-            nbr_fits[UP_LEFT] = (up_weight < HUGE_VALF && left_weight < HUGE_VALF) ? 1 : 0;
-        }
+        //     nbr_fits[UP_LEFT] = (up_weight < HUGE_VALF && left_weight < HUGE_VALF) ? 1 : 0;
+        // }
 
-        if (nbr_fits[UP_RIGHT])
-        {
-            float up_weight = weights[nbrs[UP]];
-            float right_weight = weights[nbrs[RIGHT]];
+        // if (nbr_fits[UP_RIGHT])
+        // {
+        //     float up_weight = weights[nbrs[UP]];
+        //     float right_weight = weights[nbrs[RIGHT]];
 
-            nbr_fits[UP_RIGHT] = (up_weight < HUGE_VALF && right_weight < HUGE_VALF) ? 1 : 0;
-        }
+        //     nbr_fits[UP_RIGHT] = (up_weight < HUGE_VALF && right_weight < HUGE_VALF) ? 1 : 0;
+        // }
 
-        if (nbr_fits[DOWN_LEFT])
-        {
-            float down_weight = weights[nbrs[DOWN]];
-            float left_weight = weights[nbrs[LEFT]];
+        // if (nbr_fits[DOWN_LEFT])
+        // {
+        //     float down_weight = weights[nbrs[DOWN]];
+        //     float left_weight = weights[nbrs[LEFT]];
 
-            nbr_fits[DOWN_LEFT] = (down_weight < HUGE_VALF && left_weight < HUGE_VALF) ? 1 : 0;
-        }
+        //     nbr_fits[DOWN_LEFT] = (down_weight < HUGE_VALF && left_weight < HUGE_VALF) ? 1 : 0;
+        // }
 
-        if (nbr_fits[DOWN_RIGHT])
-        {
-            float down_weight = weights[nbrs[DOWN]];
-            float right_weight = weights[nbrs[RIGHT]];
+        // if (nbr_fits[DOWN_RIGHT])
+        // {
+        //     float down_weight = weights[nbrs[DOWN]];
+        //     float right_weight = weights[nbrs[RIGHT]];
 
-            nbr_fits[DOWN_RIGHT] = (down_weight < HUGE_VALF && right_weight < HUGE_VALF) ? 1 : 0;
-        }
+        //     nbr_fits[DOWN_RIGHT] = (down_weight < HUGE_VALF && right_weight < HUGE_VALF) ? 1 : 0;
+        // }
 
         float heuristic_cost;
         float cur_cost = costs[cur.idx];
