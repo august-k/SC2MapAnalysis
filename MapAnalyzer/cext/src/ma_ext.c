@@ -832,16 +832,19 @@ static int run_clockwise_pathfind(MemoryArena *arena, float *weights, int *paths
         down_left: (x > i && y == j) || (x > i && y < j) || (x == i, y < j) -> (x >= i && y >= j)
         down: x > i
         down_right: (x == i && y > j) || (x > i && y > j) || (x > i && y == j) -> (x >= i && y <= j)
+
+        However, the directions here refer to locations in the numpy array, not on the map. So all ups and downs get swapped,
+        but I also had to re-swap up and down to get it to work. I gave up on figuring out why.
         */
 
-        nbrs[UP_LEFT] = ((row > 0 && col > 0) && (col <= origin_col && row >= origin_row)) ? cur.idx - w - 1 : -1;
+        nbrs[UP_LEFT] = ((row > 0 && col > 0) && (col >= origin_col && row >= origin_row)) ? cur.idx - w - 1 : -1;
         nbrs[UP] = ((row > 0) && (col < origin_col)) ? cur.idx - w : -1;
-        nbrs[UP_RIGHT] = ((row > 0 && col + 1 < w) && (col <= origin_col && row <= origin_row)) ? cur.idx - w + 1 : -1;
+        nbrs[UP_RIGHT] = ((row > 0 && col + 1 < w) && (col >= origin_col && row <= origin_row)) ? cur.idx - w + 1 : -1;
         nbrs[LEFT] = ((col > 0) && (row > origin_row)) ? cur.idx - 1 : -1;
         nbrs[RIGHT] = ((col + 1 < w) && (row < origin_row)) ? cur.idx + 1 : -1;
-        nbrs[DOWN_LEFT] = ((row + 1 < h && col > 0) && (col >= origin_col && row >= origin_row)) ? cur.idx + w - 1 : -1;
+        nbrs[DOWN_LEFT] = ((row + 1 < h && col > 0) && (col <= origin_col && row >= origin_row)) ? cur.idx + w - 1 : -1;
         nbrs[DOWN] = ((row + 1 < h) && (col > origin_col)) ? cur.idx + w : -1;
-        nbrs[DOWN_RIGHT] = ((row + 1 < h && col + 1 < w) && (col >= origin_col && row <= origin_row)) ? cur.idx + w + 1 : -1;
+        nbrs[DOWN_RIGHT] = ((row + 1 < h && col + 1 < w) && (col <= origin_col && row <= origin_row)) ? cur.idx + w + 1 : -1;
 
         for (int i = 0; i < 8; ++i)
         {
