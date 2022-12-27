@@ -400,7 +400,6 @@ class MapAnalyzerPather:
             goal = round(goal[0]), round(goal[1])
             goal = self.find_eligible_point(goal, grid, self.terrain_height, 10)
             origin = round(origin[0]), round(origin[1])
-            origin = self.find_eligible_point(origin, grid, self.terrain_height, 10)
         else:
             logger.warning(PatherNoPointsException(start=start, goal=goal))
             return None

@@ -1451,7 +1451,7 @@ static PyObject *clockwise_astar(PyObject *self, PyObject *args)
     float *weights = (float *)weights_object->data;
     int *paths = (int *)PushToMemoryArena(&state.function_arena, w * h * sizeof(int));
 
-    int path_length = run_pathfind(&state.function_arena, weights, paths, w, h, start, goal, large);
+    int path_length = run_clockwise_pathfind(&state.function_arena, weights, paths, w, h, start, goal, origin, large);
 
     PyObject *return_val;
     if (path_length >= 0)
