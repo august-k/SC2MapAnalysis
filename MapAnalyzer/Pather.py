@@ -395,11 +395,17 @@ class MapAnalyzerPather:
             grid = self.get_pyastar_grid()
 
         if start is not None and goal is not None and origin is not None:
-            start = round(start[0]), round(start[1])
-            start = self.find_eligible_point(start, grid, self.terrain_height, 10)
-            goal = round(goal[0]), round(goal[1])
-            goal = self.find_eligible_point(goal, grid, self.terrain_height, 10)
             origin = round(origin[0]), round(origin[1])
+            rounded_start = round(start[0]), round(start[1])
+            rounded_start = self.find_eligible_point(rounded_start, grid, self.terrain_height, 10)
+            if start == goal:
+                # looping path, move one tile counterclockwise
+                x_mod = 1 if rounded_start[1] < origin[1] else -1
+                y_mod = 1 if rounded_start[0] > origin[0] else -1
+                goal = rounded_start[0] + x_mod, rounded_start[1] + y_mod
+            else:
+                goal = round(goal[0]), round(goal[1])
+            goal = self.find_eligible_point(goal, grid, self.terrain_height, 10)
         else:
             logger.warning(PatherNoPointsException(start=start, goal=goal))
             return None
@@ -408,7 +414,7 @@ class MapAnalyzerPather:
         if start is None or goal is None or origin is None:
             return None
 
-        path = clockwise_astar_path(grid, start, goal, origin, large, smoothing)
+        path = clockwise_astar_path(grid, rounded_start, goal, origin, large, smoothing)
 
         if path is not None:
             # Remove the starting point from the path.
