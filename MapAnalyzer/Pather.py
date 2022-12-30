@@ -77,21 +77,11 @@ class MapAnalyzerPather:
         for dest in self.map_data.bot.destructables:
             self.destructables_included[dest.position] = dest
             if (
-                "unbuildable" not in dest.name.lower()
-                and "acceleration" not in dest.name.lower()
+                    "unbuildable" not in dest.name.lower()
+                    and "acceleration" not in dest.name.lower()
             ):
                 change_destructable_status_in_grid(self.default_grid, dest, 0)
                 change_destructable_status_in_grid(self.default_grid_nodestr, dest, 1)
-
-        # set each geyser as non pathable, these don't update during the game
-        for geyser in self.map_data.bot.vespene_geyser:
-            left_bottom = geyser.position.offset((-1.5, -1.5))
-            x_start = int(left_bottom[0])
-            y_start = int(left_bottom[1])
-            x_end = int(x_start + 3)
-            y_end = int(y_start + 3)
-            self.default_grid[x_start:x_end, y_start:y_end] = 0
-            self.default_grid_nodestr[x_start:x_end, y_start:y_end] = 0
 
         for mineral in self.map_data.bot.mineral_field:
             self.minerals_included[mineral.position] = mineral
@@ -103,6 +93,35 @@ class MapAnalyzerPather:
             self.default_grid[x2, y] = 0
             self.default_grid_nodestr[x1, y] = 0
             self.default_grid_nodestr[x2, y] = 0
+
+        # track all the gas corners to later remove them for walling purposes
+        all_corners = []
+
+        # set each geyser as non pathable, these don't update during the game
+        for geyser in self.map_data.bot.vespene_geyser:
+            left_bottom = geyser.position.offset((-1.5, -1.5))
+            x_start = int(left_bottom[0])
+            y_start = int(left_bottom[1])
+            x_end = int(x_start + 3)
+            y_end = int(y_start + 3)
+
+            all_corners.extend([
+                (x_start, y_start),
+                (x_start, y_end),
+                (x_end, y_start),
+                (x_end, y_end),
+            ])
+
+            self.default_grid[x_start:x_end, y_start:y_end] = 0
+            self.default_grid_nodestr[x_start:x_end, y_start:y_end] = 0
+
+        # create walling grid by removing gas corners
+        self.default_walling_grid = self.default_grid.copy()
+        self.default_walling_grid_nodestr = self.default_grid_nodestr.copy()
+        for corner in all_corners:
+            self.default_walling_grid[corner] = 1
+            self.default_walling_grid_nodestr[corner] = 1
+
 
     def set_connectivity_graph(self):
         connectivity_graph = {}
@@ -289,6 +308,12 @@ class MapAnalyzerPather:
         else:
             return self.default_grid_nodestr.copy()
 
+    def get_base_walling_grid(self, include_destructables: bool = True) -> ndarray:
+        if include_destructables:
+            return self.default_walling_grid.copy()
+        else:
+            return self.default_walling_grid_nodestr.copy()
+
     def get_climber_grid(
         self, default_weight: float = 1, include_destructables: bool = True
     ) -> ndarray:
@@ -329,6 +354,16 @@ class MapAnalyzerPather:
         self, default_weight: float = 1, include_destructables: bool = True
     ) -> ndarray:
         grid = self.get_base_pathing_grid(include_destructables)
+        grid = self._add_non_pathables_ground(
+            grid=grid, include_destructables=include_destructables
+        )
+
+        grid = np.where(grid != 0, default_weight, np.inf).astype(np.float32)
+        return grid
+
+    def get_walling_grid(self, default_weight: float = 1, include_destructables: bool = True) -> np.ndarray:
+        """Retrieve the walling grid"""
+        grid = self.get_base_walling_grid(include_destructables)
         grid = self._add_non_pathables_ground(
             grid=grid, include_destructables=include_destructables
         )

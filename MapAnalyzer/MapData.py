@@ -194,6 +194,13 @@ class MapData:
             include_destructables=include_destructables,
         )
 
+    def get_walling_grid(self, default_weight: float = 1, include_destructables: bool = True) -> np.ndarray:
+        """Retrieve the walling grid."""
+        return self.pather.get_walling_grid(
+            default_weight=default_weight,
+            include_destructables=include_destructables,
+        )
+
     def find_lowest_cost_points(
         self, from_pos: Point2, radius: float, grid: np.ndarray
     ) -> List[Point2]:
