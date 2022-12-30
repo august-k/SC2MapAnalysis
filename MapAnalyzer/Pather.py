@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 def _bounded_circle(center, radius, shape):
     xx, yy = np.ogrid[: shape[0], : shape[1]]
     circle = (xx - center[0]) ** 2 + (yy - center[1]) ** 2
-    return np.nonzero(circle <= radius ** 2)
+    return np.nonzero(circle <= radius**2)
 
 
 def draw_circle(c, radius, shape=None):
@@ -77,8 +77,8 @@ class MapAnalyzerPather:
         for dest in self.map_data.bot.destructables:
             self.destructables_included[dest.position] = dest
             if (
-                    "unbuildable" not in dest.name.lower()
-                    and "acceleration" not in dest.name.lower()
+                "unbuildable" not in dest.name.lower()
+                and "acceleration" not in dest.name.lower()
             ):
                 change_destructable_status_in_grid(self.default_grid, dest, 0)
                 change_destructable_status_in_grid(self.default_grid_nodestr, dest, 1)
@@ -105,12 +105,14 @@ class MapAnalyzerPather:
             x_end = int(x_start + 3)
             y_end = int(y_start + 3)
 
-            all_corners.extend([
-                (x_start, y_start),
-                (x_start, y_end),
-                (x_end, y_start),
-                (x_end, y_end),
-            ])
+            all_corners.extend(
+                [
+                    (x_start, y_start),
+                    (x_start, y_end - 1),
+                    (x_end - 1, y_start),
+                    (x_end - 1, y_end - 1),
+                ]
+            )
 
             self.default_grid[x_start:x_end, y_start:y_end] = 0
             self.default_grid_nodestr[x_start:x_end, y_start:y_end] = 0
@@ -121,7 +123,6 @@ class MapAnalyzerPather:
         for corner in all_corners:
             self.default_walling_grid[corner] = 1
             self.default_walling_grid_nodestr[corner] = 1
-
 
     def set_connectivity_graph(self):
         connectivity_graph = {}
@@ -361,7 +362,9 @@ class MapAnalyzerPather:
         grid = np.where(grid != 0, default_weight, np.inf).astype(np.float32)
         return grid
 
-    def get_walling_grid(self, default_weight: float = 1, include_destructables: bool = True) -> np.ndarray:
+    def get_walling_grid(
+        self, default_weight: float = 1, include_destructables: bool = True
+    ) -> np.ndarray:
         """Retrieve the walling grid"""
         grid = self.get_base_walling_grid(include_destructables)
         grid = self._add_non_pathables_ground(
@@ -414,7 +417,7 @@ class MapAnalyzerPather:
         else:
             logger.debug(f"No Path found s{start}, g{goal}")
             return None
-    
+
     def clockwise_pathfind(
         self,
         start: Tuple[float, float],
@@ -432,7 +435,9 @@ class MapAnalyzerPather:
         if start is not None and goal is not None and origin is not None:
             origin = round(origin[0]), round(origin[1])
             rounded_start = round(start[0]), round(start[1])
-            rounded_start = self.find_eligible_point(rounded_start, grid, self.terrain_height, 10)
+            rounded_start = self.find_eligible_point(
+                rounded_start, grid, self.terrain_height, 10
+            )
             if start == goal:
                 # looping path, move one tile counterclockwise
                 x_mod = 1 if rounded_start[1] < origin[1] else -1
