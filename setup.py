@@ -1,17 +1,7 @@
 import logging
 
 from setuptools import setup, Extension
-from setuptools.command.build_ext import build_ext as _build_ext
-
-# https://stackoverflow.com/a/21621689/
-class build_ext(_build_ext):
-    def finalize_options(self):
-        _build_ext.finalize_options(self)
-        # Prevent numpy from thinking it is still in its setup process:
-        __builtins__.__NUMPY_SETUP__ = False
-        import numpy
-        self.include_dirs.append(numpy.get_include())
-
+from setuptools.command.build_ext import build_ext
 
 mapping_module = Extension(
     'mapanalyzerext', sources=['MapAnalyzer/cext/src/ma_ext.c'], extra_compile_args=["-DNDEBUG", "-O2"]
