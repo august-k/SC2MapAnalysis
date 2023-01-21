@@ -1,7 +1,9 @@
 import logging
 
-from setuptools import setup, Extension
+from setuptools import dist, setup, Extension
 from setuptools.command.build_ext import build_ext
+
+dist.Distribution().fetch_build_eggs(['numpy>=1.22.3'])
 
 mapping_module = Extension(
     'mapanalyzerext', sources=['MapAnalyzer/cext/src/ma_ext.c'], extra_compile_args=["-DNDEBUG", "-O2"]
