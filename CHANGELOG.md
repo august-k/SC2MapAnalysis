@@ -1,5 +1,21 @@
 # Changelog
 
+<!--next-version-placeholder-->
+
+## v0.2.0 (2024-01-28)
+### Feature
+* Remove buildsables as a concept from polygons ([`aedd4de`](https://github.com/spudde123/SC2MapAnalysis/commit/aedd4deeb7caa124ec40b5ebe85a7a3dc1b9c44f))
+
+### Fix
+* Add building of linux extension back in workflow ([`13368b8`](https://github.com/spudde123/SC2MapAnalysis/commit/13368b82e8ec6fae0c4316f4b864307035076108))
+* Update scripts to compile the extension for ladder ([`161bd44`](https://github.com/spudde123/SC2MapAnalysis/commit/161bd44a47010b478b322b100001544190566d6d))
+* Remove capital letters from package name to make poetry happy ([`eff6f1c`](https://github.com/spudde123/SC2MapAnalysis/commit/eff6f1c4e13bfa2c1af54f3ee90ce50da6a8fc94))
+
+## v0.1.0 (2023-09-07)
+### Feature
+* Trigger release test ([`23ba55d`](https://github.com/spudde123/SC2MapAnalysis/commit/23ba55daa36868f46969771bbd74dbce01d86ec1))
+
+
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 ### [0.0.87](https://github.com/spudde123/SC2MapAnalysis/compare/v0.0.86...v0.0.87) (2021-05-04)

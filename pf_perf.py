@@ -2,11 +2,12 @@ import lzma
 import os
 import pickle
 import random
-from typing import List
-from platform import python_version
 import time
-from MapAnalyzer.MapData import MapData
-from MapAnalyzer.utils import import_bot_instance
+from typing import List
+
+from map_analyzer.MapData import MapData
+from map_analyzer.utils import import_bot_instance
+
 
 def get_random_point(minx, maxx, miny, maxy):
     return (random.randint(minx, maxx), random.randint(miny, maxy))
@@ -14,9 +15,10 @@ def get_random_point(minx, maxx, miny, maxy):
 
 def get_map_file_list() -> List[str]:
     """
-    easy way to produce less than all maps,  for example if we want to test utils, we only need one MapData object
+    easy way to produce less than all maps,
+    for example if we want to test utils, we only need one MapData object
     """
-    subfolder = "MapAnalyzer"
+    subfolder = "map_analyzer"
     subfolder2 = "pickle_gameinfo"
     subfolder = os.path.join(subfolder, subfolder2)
     folder = os.path.abspath(".")
@@ -31,7 +33,7 @@ def get_map_file_list() -> List[str]:
 map_files = get_map_file_list()
 map_file = ""
 for mf in map_files:
-    if 'goldenwall' in mf.lower():
+    if "goldenwall" in mf.lower():
         map_file = mf
         break
 
