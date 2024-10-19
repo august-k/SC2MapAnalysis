@@ -11,11 +11,11 @@ gen
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+# *.py[cod]
 *$py.class
 
 # C extensions
-*.so
+# *.so
 
 # Distribution / packaging
 node_modules/

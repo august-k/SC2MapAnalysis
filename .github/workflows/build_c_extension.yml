@@ -6,37 +6,80 @@ on:
 jobs:
   build:
     name: Build release
-
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        python-version: ['3.11']
+        python-version: ['3.10', '3.11', '3.12']
 
     steps:
-      # check-out repo
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-      # install poetry
+
       - name: Install poetry
-        run: pipx install poetry==1.5
-      # set-up python with cache
+        run: pipx install poetry
+
       - name: Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'poetry'
-      # Install requirements and build extension
+
       - name: Install requirements and build extension
         run: |
           poetry install --with dev
           python -c "import shutil, glob, os; [shutil.copy(f, '.') for f in glob.glob('mapanalyzerext*') if not os.path.exists(os.path.join('.', os.path.basename(f)))]"
-      - uses: actions/upload-artifact@v3
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}_python${{ matrix.python-version }}
           path: |
             ./mapanalyzerext*
             mapanalyzerext*
+
+  commit:
+    name: Commit all binaries
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts/
+
+      - name: List downloaded files (debugging)
+        run: ls -R ./artifacts/
+
+      - name: Move binaries to correct directory
+        run: |
+          mkdir -p ./map_analyzer/cext/
+          mv ./artifacts/* ./map_analyzer/cext/
+
+      - name: Move files from subdirectories to /map_analyzer/cext/ and remove folders
+        run: |
+          find ./map_analyzer/cext/ -mindepth 2 -type f -exec mv -t ./map_analyzer/cext/ {} +
+          find ./map_analyzer/cext/ -type d -empty -delete
+
+      - name: List moved files (debugging)
+        run: ls -R ./map_analyzer/cext/
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Commit all binaries
+        run: |
+          git add ./map_analyzer/cext/*
+          git status
+          git commit -m "Add all binaries for multiple platforms and Python versions" || echo "No changes to commit"
+          git push origin ${{ github.ref }}
